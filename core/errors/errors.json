@@ -1,0 +1,13 @@
+{
+  "error.unmapped": "unmapped error message:",
+  "error.request.body.invalid": "invalid request body",
+  "error.database": "An error occurred in the database with the message:",
+  "error.not.found.value.record": "Value cannot be converted to the currency.",
+  "error.value.not.positive": "Value must be positive.",
+  "error.description.too.long": "Description must be less than 50 characters.",
+  "error.description.empty": "Description cannot be empty.",
+  "error.loading.file.error": "Error loading file",
+  "error.get.exchange.rate": "Error getting exchange rate",
+  "error.transaction.date.required": "Transaction date is required",
+  "error.request.path.param.invalid": "Invalid request path parameter"
+}

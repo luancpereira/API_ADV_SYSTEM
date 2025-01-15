@@ -1,0 +1,67 @@
+name: apicheckout-backend
+
+services:
+    apicheckout-postgres-14.5:
+        image: postgres:14.5
+        container_name: apicheckout-postgres-14.5
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+            interval: 1s
+            timeout: 3s
+            retries: 30
+        environment:
+            - TZ=America/Sao_Paulo
+            - POSTGRES_USER=apicheckout
+            - POSTGRES_PASSWORD=apicheckout
+            - POSTGRES_DB=apicheckout
+            - PGPORT=5438
+        ports:
+            - "5438:5438"
+        volumes:
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+            - ../db:/db
+        networks:
+            apicheckout:
+                aliases:
+                    - apicheckout-postgres-14.5
+
+    apicheckout-migrate:
+        container_name: apicheckout-migrate
+        image: migrate/migrate
+        depends_on:
+            apicheckout-postgres-14.5:
+                condition: service_healthy
+        networks:
+            - apicheckout
+        volumes:
+            - ../../core/database/migration:/migration
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 10s
+                max_attempts: 5
+                window: 120s
+        command:
+            [
+                "-path",
+                "/migration",
+                "-database",
+                "postgres://apicheckout:apicheckout@apicheckout-postgres-14.5:5438/apicheckout?sslmode=disable&search_path=apicheckout",
+                "up"
+            ]
+
+    apicheckout-sqlc:
+        container_name: apicheckout-sqlc
+        image: kjconroy/sqlc:1.20.0
+        depends_on:
+            apicheckout-postgres-14.5:
+                condition: service_healthy
+            apicheckout-migrate:
+                condition: service_completed_successfully
+        networks:
+            - apicheckout
+        volumes:
+            - ../../core/database:/src
+        command: [ "generate", "-f", "/src/sqlc.yaml" ]
+networks:
+    apicheckout:

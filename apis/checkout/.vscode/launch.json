@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Api Checkout",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceRoot}",
+      "env": {
+        "DATABASE_DRIVER": "postgres",
+        "DATABASE_USER": "apicheckout",
+        "DATABASE_PASS": "apicheckout",
+        "DATABASE_NAME": "apicheckout",
+        "DATABASE_HOST": "0.0.0.0",
+        "DATABASE_PORT": "5438",
+        "ERROR_FILE": "../../core/errors/errors.json",
+        
+        "SERVER_PORT": "9000",
+        "SWAGGER_SERVER_HOST": "localhost:9000"
+      }
+    }
+  ]
+}

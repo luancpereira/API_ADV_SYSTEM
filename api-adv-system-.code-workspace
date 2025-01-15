@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "path": "core"
+    },
+    {
+      "path": "apis/checkout",
+      "name": "api_checkout"
+    },
+    {
+      "path": "dev"
+    },
+    {
+      "path": "."
+    }
+  ]
+}

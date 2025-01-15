@@ -1,0 +1,161 @@
+definitions:
+  request.InsertTransaction:
+    properties:
+      description:
+        type: string
+      transaction_date:
+        type: string
+      transaction_value:
+        type: number
+    type: object
+  response.Created:
+    properties:
+      id:
+        type: integer
+    type: object
+  response.Exception:
+    properties:
+      key:
+        type: string
+      message:
+        type: string
+    type: object
+  response.GetTransactions:
+    properties:
+      description:
+        type: string
+      exchange_rate:
+        type: number
+      id:
+        type: integer
+      transaction_date:
+        type: string
+      transaction_value:
+        type: number
+      transaction_value_converted_to_wish_currency:
+        type: number
+    type: object
+  response.GetTransactionsByID:
+    properties:
+      description:
+        type: string
+      exchange_rate:
+        type: number
+      id:
+        type: integer
+      transaction_date:
+        type: string
+      transaction_value:
+        type: number
+      transaction_value_converted_to_wish_currency:
+        type: number
+    type: object
+  response.List:
+    properties:
+      data: {}
+      pagination:
+        $ref: '#/definitions/response.Pagination'
+    type: object
+  response.Pagination:
+    properties:
+      total:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: api checkout
+  title: API Checkout
+  version: "1.0"
+paths:
+  /api/checkout:
+    post:
+      parameters:
+      - description: Body JSON
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.InsertTransaction'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Created'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Exception'
+      tags:
+      - Checkout Orders
+  /api/checkout/transactions/{transactionID}/country/{country}:
+    get:
+      parameters:
+      - description: transactionID
+        in: path
+        name: transactionID
+        required: true
+        type: integer
+      - description: country
+        in: path
+        name: country
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.GetTransactionsByID'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Exception'
+      tags:
+      - Checkout Orders
+  /api/checkout/transactions/country/{country}:
+    get:
+      parameters:
+      - description: country
+        in: path
+        name: country
+        required: true
+        type: string
+      - default: 10
+        description: limit min 1
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: offset min 0
+        in: query
+        name: offset
+        type: integer
+      - description: filter_transaction_date
+        in: query
+        name: filter_transaction_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.List'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/response.GetTransactions'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Exception'
+      tags:
+      - Checkout Orders
+swagger: "2.0"
